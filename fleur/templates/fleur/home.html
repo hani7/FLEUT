@@ -1,0 +1,9 @@
+{% extends "fleur/base.html" %}
+{% block title %}Bienvenue{% endblock %}
+{% block content %}
+  <h1>Distributeur de fleurs</h1>
+  <p>Touchez le bouton pour commencer</p>
+  <form action="{% url 'bouquets_list' %}" method="get">
+    <button type="submit">Commencer</button>
+  </form>
+{% endblock %}

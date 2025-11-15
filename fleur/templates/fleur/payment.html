@@ -1,0 +1,27 @@
+{% extends "fleur/base.html" %}
+{% block title %}Paiement{% endblock %}
+{% block content %}
+  <h2>Paiement</h2>
+  <p>Montant à payer : <strong id="amount">{{ order.amount }}</strong> DA</p>
+  <p>Montant inséré : <strong id="inserted">{{ order.inserted_amount }}</strong> DA</p>
+  <p id="status">Statut : {{ order.get_status_display }}</p>
+  <p>Insérez vos billets...</p>
+
+  <script>
+    const orderId = {{ order.id }};
+    function refreshStatus() {
+      fetch(`/api/orders/${orderId}/status/`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.detail) return;
+          document.getElementById('inserted').innerText = data.inserted_amount;
+          document.getElementById('status').innerText = "Statut : " + data.status;
+          if (data.status === "PAID" || data.status === "VENDING" || data.status === "COMPLETED") {
+            document.body.style.background = "#c8f7c5";
+          }
+        })
+        .catch(err => console.error(err));
+    }
+    setInterval(refreshStatus, 1000);
+  </script>
+{% endblock %}

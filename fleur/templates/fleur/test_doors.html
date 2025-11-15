@@ -1,0 +1,52 @@
+{% extends "fleur/base.html" %}
+{% block title %}Test ouverture portes{% endblock %}
+{% block content %}
+  <h2>Test d'ouverture des portes</h2>
+
+  {% if distributor %}
+    <p>Distributeur : <strong>{{ distributor.name }}</strong></p>
+  {% else %}
+    <p style="color:red;">Aucun distributeur configuré. Créez-en un dans l'admin.</p>
+  {% endif %}
+
+  {% if message %}
+    <p><strong>{{ message }}</strong></p>
+  {% endif %}
+
+  {% if response_raw %}
+    <p>Réponse brute du contrôleur : <code>{{ response_raw }}</code></p>
+  {% endif %}
+
+  <hr>
+
+  {% if slots %}
+    <h3>Ouvrir une porte par slot configuré</h3>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
+      {% for slot in slots %}
+        <form method="post" style="display:inline-block;">
+          {% csrf_token %}
+          <input type="hidden" name="slot_index" value="{{ slot.index }}">
+          <button type="submit" style="padding:10px 15px; border-radius:8px;">
+            Porte {{ slot.index }}{% if slot.label %} ({{ slot.label }}){% endif %}
+          </button>
+        </form>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Aucun slot configuré pour ce distributeur.</p>
+  {% endif %}
+
+  <hr>
+
+  <h3>Ouvrir une porte par index manuel</h3>
+  <form method="post">
+    {% csrf_token %}
+    <input type="number" name="slot_index" min="1" max="64" placeholder="Index porte"
+           style="padding:5px; width:120px;">
+    <button type="submit" style="padding:8px 15px; border-radius:8px;">Ouvrir</button>
+  </form>
+
+  <p style="margin-top:20px; color:#b00;">
+    ⚠️ Attention : cette page est un outil de test technique. Ne laissez pas l'URL publique.
+  </p>
+{% endblock %}
